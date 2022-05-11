@@ -1,6 +1,7 @@
 import React,{useContext} from 'react';
 import DataContext from '../context';
 import styled from 'styled-components';
+import { VscAdd } from "react-icons/vsc";
 
 const Form = styled.form`
 height:60px;
@@ -12,34 +13,35 @@ border-radius:5px;
 `
 
 const InputInner = styled.input`
+font-family: 'Josefin Sans', sans-serif;
 width:100%;
 margin-left:15px;
 height:60px;
 outline:none;
 font-size:1.5em;
 border:none;
+text-indent:.6em;
 `
 
 const AddButton = styled.button`
 width:32px;
 height:32px;
-border-radius:50%;
 margin-left:15px;
 background-color:transparent;
-border:1px solid hsl(236, 9%, 61%);
-background-color:hsl(0, 0%, 98%);
+border:none;
+cursor:pointer;
 `
 
 function Input() {
-    let {setInput, name, createTodo, input, setValue} = useContext(DataContext)
+    let {input, handleInputChange, handleSubmit} = useContext(DataContext)
   return (
       <>
-      <Form onSubmit={(e) => createTodo(name,e)}>
-        <AddButton></AddButton>
-         <InputInner type="text" value={input} onChange={(e) => setInput(e.target.value)} onKeyPress={(e) => setValue(e)}></InputInner>
+      <Form className="form" onSubmit={(e) => handleSubmit(e)}>
+        <AddButton><VscAdd size="2em"/></AddButton>
+         <InputInner type="text" value={input} onChange={(e) => handleInputChange(e)}></InputInner>
       </Form>
       </>
   )
 }
 
-export default Input
+export default Input;

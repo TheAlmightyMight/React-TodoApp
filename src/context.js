@@ -3,27 +3,55 @@ import { createContext, useState, useEffect } from 'react';
 const DataContext = createContext({});
 
 export const DataProvider = ({children}) => {
-    let [name, setName] = useState('');
-    let [todos,setTodos] = useState([]);
-    let [completedTodos, setCompletedTodos] = useState([])
+   
+    const loadedTodos = localStorage.getItem("todos")
+    ? JSON.parse(localStorage.getItem("todos"))
+    : [];
+
+    let [todos,setTodos] = useState(loadedTodos);
+    let [completedTodos, setCompletedTodos] = useState([]);
+    let [activeTodos, setActiveTodos] = useState([]);
     let [input,setInput] = useState('');
 
-    const setValue = (e) => {
-        if(e.key === 'Enter'){
-            setName(e.target.value)
+    useEffect(() => {
+        localStorage.setItem('todos', JSON.stringify(todos));
+    },[todos])
+
+    useEffect(() => {
+        setCompletedTodos(todos.filter(todo => todo.completed));
+        setActiveTodos(todos.filter(todo => !todo.completed));
+    },[todos])
+
+    const handleInputChange = (e) => {
+        setInput(e.target.value);
+    }
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        if (input){
+            createTodo(input);
             setInput('');
         }
     }
-
-    const createTodo = (name,e) => {
-        e.preventDefault();
-        setTodos ([...todos, {name: name, id: Date.now(), completed: false}]);
+    
+    const createTodo = (input) => {
+       setTodos ([...todos, {name: input, id: Date.now(), completed: false}]);
     }
 
     const removeTodo = (id) => {
-        let newTodos = todos.filter(el => el.id !== id);
-        setTodos(newTodos);
+         let newTodos = todos.filter(el => el.id !== id);
+         setTodos(newTodos);
     }
+
+    const clearCompleted = () => {
+       let clearedTodos = todos.filter(todo => !todo.completed);
+        setTodos(clearedTodos);
+    }
+
+    // const removeCompletedTodo = (id) => {
+    //     let newCompletedTodos = todos.filter(el => el.id !== id);
+    //     setCompletedTodos(newCompletedTodos);
+    // }
 
     const completeTodo = (id) => {
         setTodos(todos.map(todo => {
@@ -34,23 +62,18 @@ export const DataProvider = ({children}) => {
         }));
     }
     
-    const checkTodo = (completedTodos) => {
-        setCompletedTodos(completedTodos.map(todo => {
-            return todo.completed;
-        }))
-    }
-
     return (
         <DataContext.Provider value={{
-            checkTodo,
+            handleInputChange,
+            handleSubmit,
+            createTodo,
             completeTodo,
             removeTodo,
+            clearCompleted,
             todos,
-            setInput,
-            setValue,
+            completedTodos,
+            activeTodos,
             input,
-            name,
-            createTodo,
         }}>
             {children}
         </DataContext.Provider>

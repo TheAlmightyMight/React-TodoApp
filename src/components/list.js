@@ -1,22 +1,31 @@
-import React,{useContext} from 'react';
+import React,{useContext,useState} from 'react';
 import Todo from './todo'
 import DataContext from '../context';
 import styled from 'styled-components';
 
 const ListStyled = styled.div`
-background-color:hsl(0, 0%, 98%);
+border: 1px solid  hsl(233, 11%, 84%);
+min-height:60px;
+border-radius:5px;
 `;
 
-function List() {
-    let {todos, checkTodo} = useContext(DataContext);
+function List({isActiveVisible, isVisible, isCompletedVisible}) {
+    let {todos, completedTodos, activeTodos} = useContext(DataContext);
   return (
-    <List>
-        {todos.map(todo => {
+    <ListStyled className="list">
+        {isVisible && todos.map(todo => {
           return <Todo todo={todo} key={todo.id}/>;
         })}
-        {/* <button onClick={() => checkTodo(todos)} className="complete-btn">complete</button> */}
-    </List>
-  )
+
+        {isCompletedVisible && completedTodos.map(todo => {
+          return <Todo todo={todo} key={todo.id}/>;
+        })}
+
+        {isActiveVisible && activeTodos.map(todo => {
+          return <Todo todo={todo} key={todo.id}/>;
+        })}
+    </ListStyled>
+  );
 }
 
 export default List;
