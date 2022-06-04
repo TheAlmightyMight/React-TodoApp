@@ -38,7 +38,7 @@ function Input() {
       <>
       <Form className="form" onSubmit={(e) => handleSubmit(e)}>
         <AddButton><VscAdd size="2em"/></AddButton>
-         <InputInner type="text" value={input} onChange={(e) => handleInputChange(e)}></InputInner>
+         <InputInner className="form-input" type="text" value={input} onChange={(e) => handleInputChange(e)}></InputInner>
       </Form>
       </>
   )
